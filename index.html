@@ -1,0 +1,664 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Fenômeno 1800 - A Transmissão Fantasma</title>
+  <style>
+    body {
+      margin: 0;
+      font-family: 'Courier New', Courier, monospace;
+      background-color: #0e0e0e;
+      color: #e1e1e1;
+      overflow-x: hidden;
+      cursor: url('olho%205.PNG'), auto;
+      position: relative;
+      transition: background-color 0.8s, color 0.8s;
+    }
+
+    /* Modo noturno automático */
+    body.night {
+      background-color: #000;
+      color: #9f1a1a;
+      cursor: url('olho%205_dark.PNG'), auto;
+    }
+
+    header {
+      background: black;
+      text-align: center;
+      padding: 2rem;
+      position: relative;
+      overflow: visible;
+    }
+
+    header h1 {
+      color: crimson;
+      font-size: 2.5rem;
+      animation: glitch 1s infinite;
+      position: relative;
+      z-index: 5;
+    }
+
+    /* Sombras distorcidas animadas no header */
+    header::before,
+    header::after {
+      content: attr(data-text);
+      position: absolute;
+      top: 0; left: 0;
+      width: 100%;
+      height: 100%;
+      color: crimson;
+      opacity: 0.3;
+      z-index: 4;
+      clip-path: inset(0 0 40% 0);
+      animation: shadowShift 3s infinite;
+      pointer-events: none;
+      user-select: none;
+    }
+
+    header::after {
+      color: #ff004d;
+      animation-delay: 1.5s;
+      clip-path: inset(40% 0 0 0);
+    }
+
+    @keyframes shadowShift {
+      0%, 100% { transform: translate(0,0) skew(0deg); }
+      50% { transform: translate(3px, 1px) skew(-2deg); }
+    }
+
+    header img {
+      width: 80px;
+      height: auto;
+      margin-bottom: 1rem;
+      position: relative;
+      z-index: 5;
+    }
+
+    @keyframes glitch {
+      0% { text-shadow: 2px 0 red; }
+      20% { text-shadow: -2px 0 blue; }
+      40% { text-shadow: 2px 0 green; }
+      60% { text-shadow: -2px 0 yellow; }
+      80% { text-shadow: 2px 0 magenta; }
+      100% { text-shadow: 0 0 white; }
+    }
+
+    section {
+      padding: 2rem;
+      max-width: 800px;
+      margin: auto;
+      line-height: 1.6;
+      position: relative;
+      z-index: 2;
+    }
+
+    .highlight {
+      color: red;
+      font-weight: bold;
+      font-style: italic;
+    }
+
+    .glitch-text {
+      font-family: monospace;
+      color: crimson;
+      white-space: pre-line;
+      background: black;
+      padding: 1rem;
+      border-left: 3px solid red;
+      margin-top: 2rem;
+    }
+
+    .footer {
+      text-align: center;
+      color: gray;
+      padding: 1rem;
+      font-size: 0.9rem;
+      position: relative;
+      z-index: 2;
+    }
+
+    input, button, select {
+      background: black;
+      color: crimson;
+      border: 1px solid crimson;
+      padding: 0.5rem;
+      margin: 0.5rem 0;
+      font-family: monospace;
+      transition: background-color 0.3s, color 0.3s;
+    }
+
+    input:focus, button:focus {
+      outline: 2px solid crimson;
+      outline-offset: 2px;
+    }
+
+    button:disabled {
+      background: #330000;
+      color: #660000;
+      border-color: #660000;
+      cursor: not-allowed;
+    }
+
+    #response {
+      margin-top: 1rem;
+      color: lightgreen;
+      font-weight: bold;
+      min-height: 24px;
+    }
+
+    #contador {
+      font-size: 1.2rem;
+      margin-top: 2rem;
+      color: crimson;
+      text-align: center;
+    }
+
+    #convocados {
+      margin-top: 2rem;
+      background: #1a1a1a;
+      padding: 1rem;
+      border: 1px solid crimson;
+      max-height: 150px;
+      overflow-y: auto;
+    }
+
+    /* VHS Scanlines animadas */
+    .vhs-filter {
+      position: fixed;
+      top: 0; left: 0;
+      width: 100%;
+      height: 100%;
+      background-image: repeating-linear-gradient(
+        to bottom,
+        rgba(255, 255, 255, 0.04) 0px,
+        rgba(255, 255, 255, 0.04) 1px,
+        transparent 1px,
+        transparent 3px
+      );
+      mix-blend-mode: overlay;
+      z-index: 99;
+      pointer-events: none;
+      animation: tvError 10s infinite;
+    }
+
+    @keyframes tvError {
+      0%, 96%, 100% { opacity: 0; }
+      97% { opacity: 0.3; }
+      98% { opacity: 0.5; }
+      99% { opacity: 0.2; }
+    }
+
+    /* Efeito glitch mais agressivo e rápido */
+    .glitch-flash {
+      position: fixed;
+      top: 0; left: 0;
+      width: 100vw;
+      height: 100vh;
+      background: rgba(255, 0, 0, 0.15);
+      mix-blend-mode: screen;
+      pointer-events: none;
+      z-index: 1000;
+      animation: flashGlitch 0.15s ease-in-out;
+    }
+    @keyframes flashGlitch {
+      0% { opacity: 0; }
+      50% { opacity: 1; }
+      100% { opacity: 0; }
+    }
+
+    canvas {
+      position: fixed;
+      top: 0;
+      left: 0;
+      z-index: 98;
+      pointer-events: none;
+    }
+
+    /* Pop-up alerta sistema corrompido */
+    #alertaSistema {
+      position: fixed;
+      top: 20px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: #220000cc;
+      color: crimson;
+      border: 2px solid crimson;
+      padding: 1rem 2rem;
+      font-family: monospace;
+      font-size: 1.1rem;
+      z-index: 999;
+      display: none;
+      animation: glitchAlert 1s infinite alternate;
+      user-select: none;
+      cursor: default;
+      box-shadow: 0 0 15px crimson;
+    }
+
+    @keyframes glitchAlert {
+      0% { text-shadow: 0 0 5px crimson; }
+      100% { text-shadow: 2px 2px 10px #ff0000; }
+    }
+
+    /* Reset falso */
+    #resetBtn {
+      display: block;
+      margin: 2rem auto;
+      padding: 0.75rem 2rem;
+      cursor: pointer;
+      font-weight: bold;
+      border: 2px solid crimson;
+      background: black;
+      color: crimson;
+      font-family: monospace;
+      transition: background 0.3s;
+      z-index: 2;
+    }
+    #resetBtn:hover:not(:disabled) {
+      background: crimson;
+      color: black;
+    }
+
+    /* Escolha simples estilo */
+    #escolhaContainer {
+      margin-top: 2rem;
+      background: #110000cc;
+      padding: 1rem;
+      border: 1px solid crimson;
+      font-family: monospace;
+      color: crimson;
+      max-width: 400px;
+      margin-left: auto;
+      margin-right: auto;
+      text-align: center;
+      user-select: none;
+    }
+
+    #escolhaContainer button {
+      margin: 0.5rem;
+      padding: 0.5rem 1.2rem;
+      border: 1px solid crimson;
+      background: black;
+      color: crimson;
+      cursor: pointer;
+      font-family: monospace;
+      transition: background-color 0.3s, color 0.3s;
+    }
+    #escolhaContainer button:hover {
+      background: crimson;
+      color: black;
+    }
+
+    /* Mensagem secreta easter egg */
+    #mensagemSecreta {
+      margin-top: 1rem;
+      color: #ff0033;
+      font-weight: bold;
+      font-family: monospace;
+      display: none;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Áudio ambiente looping -->
+  <audio id="audioAmbiente" autoplay loop>
+    <source src="boiolinhaone.mp3" type="audio/mpeg" />
+  </audio>
+
+  <canvas id="glitchCanvas"></canvas>
+  <div class="vhs-filter"></div>
+
+  <header data-text="Fenômeno 1800">
+    <img src="olho.jpeg" alt="Logo" />
+    <h1>Fenômeno 1800</h1>
+    <p class="highlight">“Eles ainda estão brincando comigo...”</p>
+  </header>
+
+  <section>
+    <p>Era uma tarde abafada e comum. Um daqueles dias sem importância. Crianças desapareciam com frequência pelo mundo. Mas tudo parecia seguir normalmente.</p>
+
+    <p>Então, <span class="highlight">aconteceu</span>.</p>
+
+    <p>Todas as telas mudaram. Um programa infantil dos anos 80 surgiu sem explicação. O boneco de pano, os olhos de botão, a música invertida...</p>
+
+    <div class="glitch-text">
+      “Olá, criancinhas…/que saudade de você"
+    </div>
+
+    <p>Você foi chamado pelo governo para investigar. Por quê?</p>
+
+    <div class="glitch-text">
+      Nome: <input type='text' id='nome' autocomplete="off" />
+      <br />Motivo do recrutamento: <input type='text' id='motivo' autocomplete="off" />
+      <br />
+      <button id="enviarDadosBtn" onclick="revelarFicha()">Enviar Dados</button>
+      <div id="response"></div>
+    </div>
+
+    <div id="contador">Tempo restante: <span id="timer">--:--:--:--</span></div>
+
+    <div id="convocados">
+      <h3>Convocados Recentes</h3>
+      <ul id="listaConvocados"></ul>
+    </div>
+
+    <!-- Chat falso "mensagens do além" -->
+    <div class="glitch-text" style="margin-top:3rem;">
+      <p><strong>Converse com o Além:</strong></p>
+      <input type="text" id="chatInput" placeholder="Digite sua mensagem..." autocomplete="off" />
+      <button onclick="responderChat()">Enviar</button>
+      <div id="chatResponse" style="margin-top:1rem; min-height:30px; color:#ff4444; font-weight:bold;"></div>
+      
+      <video id="chatVideoEspecial" width="320" height="180" style="display:none; margin-top: 10px;" controls>
+        <source src="video_especial.mp4" type="video/mp4" />
+        Seu navegador não suporta vídeo HTML5.
+      </video>
+
+      <video id="chatVideo" width="320" height="180" style="display:none; margin-top: 10px;" controls>
+        <source src="video_sinistro.mp4" type="video/mp4" />
+        Seu navegador não suporta vídeo HTML5.
+      </video>
+    </div>
+
+    <!-- Escolha simples -->
+    <div id="escolhaContainer" style="display:none;">
+      <p>Você decide:</p>
+      <button id="botaoInvestigar" onclick="escolhaResposta(1)">Investigar o sinal</button>
+      <button id="botaoIgnorar" onclick="escolhaResposta(2)">Ignorar e fugir</button>
+      <div id="escolhaResultado" style="margin-top:1rem; min-height:30px;"></div>
+      <div id="mensagemSecreta">Você não pode fugir para sempre...</div>
+    </div>
+
+    <button id="resetBtn" title="Recarregar (falha do sistema)">Reiniciar Transmissão</button>
+
+  </section>
+
+  <div id="alertaSistema">SISTEMA CORROMPIDO - INTERFERÊNCIA DETECTADA</div>
+
+  <div class="footer">
+    &copy; 2025 Fenômeno 1800 | Desenvolvido por Consciência Anônima
+  </div>
+
+  <script>
+    let entrada;
+    const enviarBtn = document.getElementById('enviarDadosBtn');
+    const alertaSistema = document.getElementById('alertaSistema');
+    const audioAmbiente = document.getElementById('audioAmbiente');
+    const botaoIgnorar = document.getElementById('botaoIgnorar');
+    let ignorarClickCount = 0;
+
+    // Mostrar mensagem secreta se botão ignorar clicado 3x
+    const mensagemSecretaEl = document.getElementById('mensagemSecreta');
+
+    function revelarFicha() {
+      const nome = document.getElementById('nome').value.trim();
+      const motivo = document.getElementById('motivo').value.trim();
+      const response = document.getElementById('response');
+
+      if (nome === '' || motivo === '') {
+        response.textContent = "Preencha todos os campos... Ele está observando.";
+        response.style.color = 'orange';
+        return;
+      }
+
+      // Feedback de botão enviando
+      enviarBtn.disabled = true;
+      enviarBtn.textContent = "Enviando...";
+
+      setTimeout(() => {
+        response.textContent = `Ficha criada: ${nome}, Recrutado por: ${motivo}. Prepare-se... você entra em 60 dias.`;
+        response.style.color = 'lightgreen';
+        adicionarConvocado(nome, motivo);
+        iniciarContador();
+        mostrarEscolha();
+
+        enviarBtn.disabled = false;
+        enviarBtn.textContent = "Enviar Dados";
+      }, 1200);
+    }
+
+    function adicionarConvocado(nome, motivo) {
+      const lista = document.getElementById('listaConvocados');
+      const li = document.createElement('li');
+      li.textContent = `${nome} - ${motivo}`;
+      lista.appendChild(li);
+    }
+
+    function iniciarContador() {
+      const agora = new Date().getTime();
+      const dias60 = 60 * 24 * 60 * 60 * 1000;
+      entrada = agora + dias60;
+
+      const timerEl = document.getElementById("timer");
+
+      const interval = setInterval(() => {
+        const agoraAtual = new Date().getTime();
+        const distancia = entrada - agoraAtual;
+
+        if (distancia < 0) {
+          clearInterval(interval);
+          timerEl.textContent = "É chegada a hora.";
+          return;
+        }
+
+        const dias = Math.floor(distancia / (1000 * 60 * 60 * 24));
+        const horas = Math.floor((distancia % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+        const minutos = Math.floor((distancia % (1000 * 60 * 60)) / (1000 * 60));
+        const segundos = Math.floor((distancia % (1000 * 60)) / 1000);
+
+        timerEl.textContent = `${dias}d ${horas.toString().padStart(2, '0')}:${minutos
+          .toString()
+          .padStart(2, '0')}:${segundos.toString().padStart(2, '0')}`;
+      }, 1000);
+    }
+
+    // Glitch visual com intervalo aleatório e efeito mais sutil, que some após 500ms
+    const canvas = document.getElementById('glitchCanvas');
+    const ctx = canvas.getContext('2d');
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+
+    function drawGlitch() {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      const glitchBars = Math.floor(Math.random() * 4) + 2; // entre 2 e 5 barras
+
+      ctx.globalAlpha = 0.15; // opacidade baixa para efeito suave
+
+      for (let i = 0; i < glitchBars; i++) {
+        const y = Math.random() * canvas.height;
+        const height = Math.random() * 15 + 5; // altura entre 5 e 20
+        const offset = Math.random() * 30 - 15; // deslocamento horizontal -15 a 15
+        ctx.fillStyle = ['#ff0000', '#00ff99', '#00ccff', '#ffffff'][Math.floor(Math.random() * 4)];
+        ctx.fillRect(offset, y, canvas.width, height);
+      }
+
+      ctx.globalAlpha = 1; // resetar opacidade
+    }
+
+    function showGlitchTemporarily() {
+      drawGlitch();
+      setTimeout(() => {
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+      }, 500); // Limpa após 500ms (efeito mais rápido)
+    }
+
+    function randomGlitchInterval() {
+      const randomTime = Math.floor(Math.random() * (15000 - 7000 + 1)) + 7000; // entre 7 e 15 segundos
+      setTimeout(() => {
+        showGlitchTemporarily();
+        randomGlitchInterval();
+      }, randomTime);
+    }
+    randomGlitchInterval();
+
+    // Glitch flash agressivo (flash vermelho) ocasional
+    function flashGlitch() {
+      const flash = document.createElement('div');
+      flash.classList.add('glitch-flash');
+      document.body.appendChild(flash);
+      setTimeout(() => {
+        document.body.removeChild(flash);
+      }, 150);
+    }
+
+    function randomFlashGlitchInterval() {
+      const randomTime = Math.floor(Math.random() * (45000 - 20000 + 1)) + 20000; // entre 20 e 45 seg
+      setTimeout(() => {
+        flashGlitch();
+        randomFlashGlitchInterval();
+      }, randomTime);
+    }
+    randomFlashGlitchInterval();
+
+    // Ajustar canvas ao redimensionar a janela
+    window.addEventListener('resize', () => {
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
+    });
+
+    // *** Chat falso “mensagens do além” ***
+
+    function responderChat() {
+      const inputRaw = document.getElementById('chatInput').value.trim();
+      const input = inputRaw.toLowerCase();
+      const respostaEl = document.getElementById('chatResponse');
+      const videoEspecial = document.getElementById('chatVideoEspecial');
+      const videoPadrao = document.getElementById('chatVideo');
+
+      // Esconde e pausa os vídeos por padrão
+      videoEspecial.style.display = 'none';
+      videoEspecial.pause();
+      videoEspecial.currentTime = 0;
+
+      videoPadrao.style.display = 'none';
+      videoPadrao.pause();
+      videoPadrao.currentTime = 0;
+
+      if (!inputRaw) {
+        respostaEl.textContent = "Diga algo para ouvir a resposta...";
+        return;
+      }
+
+      // Palavras-chave para vídeo especial
+      const palavrasEspecial = ['fenômeno 1800', 'nino', '1800'];
+
+      // Verifica se a mensagem contém alguma palavra-chave especial (exata ou substring)
+      const triggerEspecial = palavrasEspecial.some(palavra => input.includes(palavra.toLowerCase()));
+
+      if (triggerEspecial) {
+        respostaEl.textContent = "Você evocou o Fenômeno... Assista com atenção.";
+        videoEspecial.style.display = 'block';
+        videoEspecial.play();
+
+        // Esconde o vídeo após 20 segundos
+        setTimeout(() => {
+          videoEspecial.style.display = 'none';
+          videoEspecial.pause();
+          videoEspecial.currentTime = 0;
+        }, 20000);
+
+      } else {
+        // Palavras-chave que ativam o vídeo padrão
+        const triggerPadraoWords = ['vídeo', 'sinal', 'mostrar', 'olhar', 'imagem', 'transmissão'];
+
+        const triggerPadrao = triggerPadraoWords.some(word => input.includes(word));
+
+        if (triggerPadrao) {
+          respostaEl.textContent = "O sinal está chegando... Assista com atenção.";
+          videoPadrao.style.display = 'block';
+          videoPadrao.play();
+
+          setTimeout(() => {
+            videoPadrao.style.display = 'none';
+            videoPadrao.pause();
+            videoPadrao.currentTime = 0;
+          }, 20000);
+        } else {
+          // Resposta sinistra padrão
+          const respostasSinistras = [
+            "Eles estão te observando...",
+            "Não olhe para trás.",
+            "O sinal está ficando mais forte.",
+            "Você não deveria estar aqui...",
+            "Escute as vozes nas estáticas.",
+            "O tempo não é mais seu amigo.",
+            "As crianças somem ao anoitecer.",
+            "Algo se aproxima.",
+            "A luz está falhando...",
+            "Não confie nas imagens."
+          ];
+          const aleatoria = respostasSinistras[Math.floor(Math.random() * respostasSinistras.length)];
+          respostaEl.textContent = aleatoria;
+        }
+      }
+
+      document.getElementById('chatInput').value = '';
+    }
+
+    // Mostrar escolhas simples após ficha criada
+    function mostrarEscolha() {
+      document.getElementById('escolhaContainer').style.display = 'block';
+    }
+
+    // Função para responder escolha do usuário
+    function escolhaResposta(opcao) {
+      const resultadoEl = document.getElementById('escolhaResultado');
+      if (opcao === 1) {
+        resultadoEl.textContent = "Você decidiu investigar o sinal misterioso. As imagens distorcidas revelam um código oculto...";
+        mensagemSecretaEl.style.display = 'none';
+        ignorarClickCount = 0;
+      } else if (opcao === 2) {
+        resultadoEl.textContent = "Você ignorou o chamado e fugiu, mas a transmissão ainda está dentro de você.";
+        ignorarClickCount++;
+        if (ignorarClickCount >= 3) {
+          mensagemSecretaEl.style.display = 'block';
+        }
+      }
+    }
+
+    // Botão reset falso — efeito de glitch + recarregar página simulada
+    const resetBtn = document.getElementById('resetBtn');
+    resetBtn.addEventListener('click', () => {
+      alertaSistema.style.display = 'block';
+
+      // Pisca alerta por 3 segundos
+      setTimeout(() => {
+        alertaSistema.style.display = 'none';
+
+        // Efeito de glitch (piscadas rápidas)
+        let count = 0;
+        const glitchInterval = setInterval(() => {
+          document.body.style.backgroundColor = count % 2 === 0 ? '#220000' : '#0e0e0e';
+          count++;
+          if (count > 10) {
+            clearInterval(glitchInterval);
+            document.body.style.backgroundColor = '#0e0e0e';
+          }
+        }, 150);
+      }, 3000);
+    });
+
+    // Pausar áudio se usuário muda de aba para não incomodar
+    window.addEventListener('blur', () => {
+      audioAmbiente.pause();
+    });
+    window.addEventListener('focus', () => {
+      audioAmbiente.play();
+    });
+
+    // Modo noturno automático baseado no horário local (entre 19h e 6h)
+    function aplicarModoNoturno() {
+      const hora = new Date().getHours();
+      if (hora >= 19 || hora < 6) {
+        document.body.classList.add('night');
+      } else {
+        document.body.classList.remove('night');
+      }
+    }
+    aplicarModoNoturno();
+    setInterval(aplicarModoNoturno, 60000); // Verifica a cada minuto
+
+  </script>
+</body>
+</html>

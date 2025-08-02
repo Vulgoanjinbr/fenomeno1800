@@ -1,0 +1,47 @@
+/* Cursor personalizado */
+body {
+  cursor: url("olho%205.PNG"), auto;
+}
+
+/* Luzes piscando nas bordas */
+@keyframes luzPiscando {
+  0%, 100% { box-shadow: 0 0 15px 2px crimson inset; }
+  50% { box-shadow: 0 0 30px 10px white inset; }
+}
+body::before {
+  content: '';
+  position: fixed;
+  top: 0; left: 0; right: 0; bottom: 0;
+  pointer-events: none;
+  animation: luzPiscando 2s infinite;
+  z-index: 100;
+}
+
+/* Filtro VHS */
+.vhs-filter {
+  position: fixed;
+  top: 0; left: 0;
+  width: 100%;
+  height: 100%;
+  background-image: repeating-linear-gradient(
+    to bottom,
+    rgba(255, 255, 255, 0.02) 0px,
+    rgba(255, 255, 255, 0.02) 2px,
+    transparent 2px,
+    transparent 4px
+  );
+  mix-blend-mode: overlay;
+  z-index: 99;
+  pointer-events: none;
+}
+
+/* Glitch overlay */
+.glitch-effect {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: 101;
+}
