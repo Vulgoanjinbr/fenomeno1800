@@ -154,13 +154,37 @@
       text-align: center;
     }
 
+    /* Novo estilo para a tabela de convocados */
     #convocados {
-      margin-top: 2rem;
       background: #1a1a1a;
-      padding: 1rem;
       border: 1px solid crimson;
-      max-height: 150px;
-      overflow-y: auto;
+      padding: 1rem;
+      margin-top: 2rem;
+      overflow-x: auto;
+    }
+
+    #convocados h3 {
+      color: crimson;
+      border-bottom: 1px solid #333;
+      padding-bottom: 0.5rem;
+      margin-top: 0;
+    }
+
+    #listaConvocados {
+      width: 100%;
+      color: #e1e1e1;
+      border-collapse: collapse;
+    }
+
+    #listaConvocados th {
+      text-align: left;
+      padding: 0.5rem;
+      border-bottom: 1px solid #333;
+    }
+
+    #listaConvocados td {
+      padding: 0.5rem;
+      border-bottom: 1px solid #333;
     }
 
     /* VHS Scanlines animadas */
@@ -338,27 +362,21 @@
 
     <div id="contador">Tempo restante: <span id="timer">--:--:--:--</span></div>
 
+    <!-- Nova seção de convocados com tabela -->
     <div id="convocados">
       <h3>Convocados Recentes</h3>
-      <ul id="listaConvocados"></ul>
-    </div>
-
-    <!-- Chat falso "mensagens do além" -->
-    <div class="glitch-text" style="margin-top:3rem;">
-      <p><strong>Converse com o Além:</strong></p>
-      <input type="text" id="chatInput" placeholder="Digite sua mensagem..." autocomplete="off" />
-      <button onclick="responderChat()">Enviar</button>
-      <div id="chatResponse" style="margin-top:1rem; min-height:30px; color:#ff4444; font-weight:bold;"></div>
-      
-      <video id="chatVideoEspecial" width="320" height="180" style="display:none; margin-top: 10px;" controls>
-        <source src="video_especial.mp4" type="video/mp4" />
-        Seu navegador não suporta vídeo HTML5.
-      </video>
-
-      <video id="chatVideo" width="320" height="180" style="display:none; margin-top: 10px;" controls>
-        <source src="video_sinistro.mp4" type="video/mp4" />
-        Seu navegador não suporta vídeo HTML5.
-      </video>
+      <table id="listaConvocados">
+        <thead>
+          <tr>
+            <th>Nome</th>
+            <th>Motivo</th>
+            <th>Local</th>
+          </tr>
+        </thead>
+        <tbody>
+          <!-- Linhas serão adicionadas dinamicamente -->
+        </tbody>
+      </table>
     </div>
 
     <!-- Escolha simples -->
@@ -419,10 +437,24 @@
     }
 
     function adicionarConvocado(nome, motivo) {
-      const lista = document.getElementById('listaConvocados');
-      const li = document.createElement('li');
-      li.textContent = `${nome} - ${motivo}`;
-      lista.appendChild(li);
+      const tbody = document.querySelector('#listaConvocados tbody');
+      const tr = document.createElement('tr');
+      
+      const tdNome = document.createElement('td');
+      tdNome.textContent = nome;
+      
+      const tdMotivo = document.createElement('td');
+      tdMotivo.textContent = motivo;
+      
+      const tdLocal = document.createElement('td');
+      // Adiciona um local aleatório
+      const locais = ["Sala 13", "Porão", "Torre Leste", "Laboratório 7", "Sótão"];
+      tdLocal.textContent = locais[Math.floor(Math.random() * locais.length)];
+      
+      tr.appendChild(tdNome);
+      tr.appendChild(tdMotivo);
+      tr.appendChild(tdLocal);
+      tbody.appendChild(tr);
     }
 
     function iniciarContador() {
@@ -516,85 +548,6 @@
       canvas.width = window.innerWidth;
       canvas.height = window.innerHeight;
     });
-
-    // *** Chat falso “mensagens do além” ***
-
-    function responderChat() {
-      const inputRaw = document.getElementById('chatInput').value.trim();
-      const input = inputRaw.toLowerCase();
-      const respostaEl = document.getElementById('chatResponse');
-      const videoEspecial = document.getElementById('chatVideoEspecial');
-      const videoPadrao = document.getElementById('chatVideo');
-
-      // Esconde e pausa os vídeos por padrão
-      videoEspecial.style.display = 'none';
-      videoEspecial.pause();
-      videoEspecial.currentTime = 0;
-
-      videoPadrao.style.display = 'none';
-      videoPadrao.pause();
-      videoPadrao.currentTime = 0;
-
-      if (!inputRaw) {
-        respostaEl.textContent = "Diga algo para ouvir a resposta...";
-        return;
-      }
-
-      // Palavras-chave para vídeo especial
-      const palavrasEspecial = ['fenômeno 1800', 'nino', '1800'];
-
-      // Verifica se a mensagem contém alguma palavra-chave especial (exata ou substring)
-      const triggerEspecial = palavrasEspecial.some(palavra => input.includes(palavra.toLowerCase()));
-
-      if (triggerEspecial) {
-        respostaEl.textContent = "Você evocou o Fenômeno... Assista com atenção.";
-        videoEspecial.style.display = 'block';
-        videoEspecial.play();
-
-        // Esconde o vídeo após 20 segundos
-        setTimeout(() => {
-          videoEspecial.style.display = 'none';
-          videoEspecial.pause();
-          videoEspecial.currentTime = 0;
-        }, 20000);
-
-      } else {
-        // Palavras-chave que ativam o vídeo padrão
-        const triggerPadraoWords = ['vídeo', 'sinal', 'mostrar', 'olhar', 'imagem', 'transmissão'];
-
-        const triggerPadrao = triggerPadraoWords.some(word => input.includes(word));
-
-        if (triggerPadrao) {
-          respostaEl.textContent = "O sinal está chegando... Assista com atenção.";
-          videoPadrao.style.display = 'block';
-          videoPadrao.play();
-
-          setTimeout(() => {
-            videoPadrao.style.display = 'none';
-            videoPadrao.pause();
-            videoPadrao.currentTime = 0;
-          }, 20000);
-        } else {
-          // Resposta sinistra padrão
-          const respostasSinistras = [
-            "Eles estão te observando...",
-            "Não olhe para trás.",
-            "O sinal está ficando mais forte.",
-            "Você não deveria estar aqui...",
-            "Escute as vozes nas estáticas.",
-            "O tempo não é mais seu amigo.",
-            "As crianças somem ao anoitecer.",
-            "Algo se aproxima.",
-            "A luz está falhando...",
-            "Não confie nas imagens."
-          ];
-          const aleatoria = respostasSinistras[Math.floor(Math.random() * respostasSinistras.length)];
-          respostaEl.textContent = aleatoria;
-        }
-      }
-
-      document.getElementById('chatInput').value = '';
-    }
 
     // Mostrar escolhas simples após ficha criada
     function mostrarEscolha() {
